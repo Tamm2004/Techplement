@@ -1,0 +1,109 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Quotes Generator</title>
+	<link rel="stylesheet" type="text/css" href='{%static "css\bootstrap.min.css" %}'>
+	<link rel="stylesheet" type="text/css" href='{%static "icofont\icofont.min.css" %}'>
+	<script src='{%static "js/bootstrap.bundle.min.js" %}'></script>
+	<style type="text/css">
+		body{
+			overflow-x: hidden;
+		}
+		i:hover{
+			cursor: pointer;
+		}
+		
+	</style>
+</head>
+<body>
+	<!-- navbar -->
+	<nav class="navbar navbar-expand-lg p-2" style="background-color:#00150f">
+  		<div class="container-fluid fs-5">
+    		<div class="navbar-brand fs-1 ms-3" href="#" style="color: white;">Welcome to the &nbsp;<span style="color:#00d094">Quotes</span> Generator
+    		</div>
+    		<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation" style="border-color: #00d094 !important; box-shadow: none;">
+    		<span class="navbar-toggler-icon"></span>
+    		</button>
+    		<div class="collapse navbar-collapse" id="navbarSupportedContent">
+    			<form method="POST" action="{% url 'search' %}">
+    			{% csrf_token %}
+    			<div class="Search" style="margin-left: 300px;">
+	    			<input type="text" name="name" placeholder="Search..." class="border name" style="">
+	    			<button type="submit" style="border: none; background: transparent;"><i class="icofont-ui-search border p-1" style="background-color: grey"></i></button>
+    			</div>
+    			</form>
+    		</div>
+ 		</div>
+	</nav>
+
+	<!-- quote -->
+
+	<div class="container">
+		{% if author %}
+		<center><p id="quote_ref" style="text-align: justify; font-size: 40px; margin-top: 120px;color:#00150f !important;">"{{ quote }}"</p></center>
+		{% else %}	
+		<center><p id="quote" style="text-align: justify; font-size: 40px; margin-top: 120px;color:#00150f !important;">"Your quote goes here....."</p></center>
+		{% endif %}
+	</div>
+
+
+	<div class="row mb-5" style="margin-top: 100px;">
+
+		<!-- refresh button -->
+		<div class="col-md-6" style="padding-left: 150px;">
+			<button id="refresh" style="color:#00d094; border:none; background:transparent;">
+				<i class="icofont-refresh icofont-2x"></i>
+			</button>
+		</div>
+
+		<!-- author name -->
+		<div class="col-md-6">
+			{% if author %}
+			<h4 id="author_ref" style="text-align: justify;font-size: 40px;margin-left: 150px;color:#00d094">
+					~{{ author }}
+			</h4>
+			{% else %}
+			
+				<h4 id="author" style="text-align: justify;font-size: 40px;margin-left: 150px;color:#00d094">
+					~Author is here...
+				</h4>
+			{% endif %}
+		</div>
+	</div>
+	{% if err %}
+	<script type="text/javascript">
+		alert("Author not found")
+	</script>
+	{% endif %}
+
+	{% if err2 %}
+	<script type="text/javascript">
+		alert("Please enter the author name")
+	</script>
+	{% endif %}
+
+<script type="text/javascript">
+        const api = "https://dummyjson.com/quotes/random";
+        const author=document.getElementById("author_ref");
+        const quote=document.getElementById("quote_ref");
+
+        const btn = document.getElementById("refresh");
+
+        btn.addEventListener("click", getQuote);
+
+        function getQuote() {
+            fetch(api)
+                .then((response) => response.json())
+                .then((data) => {
+                    quote.innerHTML = `"${data.quote}"`;
+                    author.innerHTML = `- ${data.author}`;
+                })
+                .catch((error) => console.error('Error fetching the quote:', error));
+        }
+
+        // Fetch a quote on page load
+</script>
+</body>
+</html>
+
